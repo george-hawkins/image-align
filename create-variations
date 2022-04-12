@@ -1,0 +1,34 @@
+#!/bin/bash -e
+
+function fail {
+    echo "$1" 1>&2
+    exit 1
+}
+
+[ $# -eq 1 ] || fail "Usage: $0 image-file"
+
+mkdir -p variations
+
+# Names like foo-270.png would be more informative that foo-rd.png
+# but an issue in Blender 3.2 makes such names problematic.
+
+orig=$1
+cp $orig variations/ra.png
+convert $orig -rotate  90 variations/rb.png
+convert $orig -rotate 180 variations/rc.png
+convert $orig -rotate 270 variations/rd.png
+
+function flipflop {
+    local orig=$1
+    local name=${orig//.png}
+    cp $orig $name-xx.png
+    convert -flip $orig $name-xv.png
+    convert -flop $orig $name-hx.png
+    convert -flip -flop $orig $name-hv.png
+    rm $orig
+}
+
+for rotation in ra rb rc rd
+do
+    flipflop variations/$rotation.png
+done
