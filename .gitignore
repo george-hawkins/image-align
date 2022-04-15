@@ -1,6 +1,8 @@
 .*.sw*
 .idea/
 env/
+venv/
 __pycache__/
 junk/
 variations/
+*.blend1
